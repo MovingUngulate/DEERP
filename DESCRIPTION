@@ -1,0 +1,19 @@
+Package: DEERP
+Type: Package
+Title: DEER Project Stuffs
+Version: 0.4
+Encoding: UTF-8
+Author: Matthew M. Hayes
+Maintainer: Matthew M. Hayes <mhayes1@uwyo.edu>
+Description: This package contains data cleaning and manipulating stuffs
+BugReports: https://github.com/MovingUngulate/DEERP
+License: GPL-3
+LazyData: TRUE
+Imports:
+    sp,
+    data.table,
+    rgdal,
+    rmarkdown,
+    knitr,
+    jpeg
+RoxygenNote: 6.1.1
