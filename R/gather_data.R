@@ -100,6 +100,7 @@ gather_data<-function(usernames,
       if(is.na(xxx[1,2])){next}
       ss<-gps[gps$CollarSerialNumber==xxx[1,2],]
       ss<-ss[(ss$Date>=xxx[,3])&ss$Date<=(xxx[,4]),]
+      if(nrow(ss)==0){next}
       ss<-ss[complete.cases(ss$Latitude),]
       
       c<-cap[cap$UAID == xxx[1,1],]
