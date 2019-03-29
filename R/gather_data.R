@@ -140,6 +140,6 @@ gather_data<-function(usernames,
   sp::coordinates(outsp)<-~Longitude+Latitude
   sp::proj4string(outsp)<-proj
   
-  return(outsp2)
+  return(outsp)
   
 }
