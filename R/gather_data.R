@@ -80,6 +80,10 @@ gather_data<-function(usernames,
   
   x<-retCapHist(lookup)
   
+  proj<-sp::proj4string(gps)
+  gps<-as.data.frame(gps)
+  names(gps)[8:9]<-c('Longitude','Latitude')
+  
   for(i in 1:nrow(x)){
     xx<-x[i,]
     
@@ -129,8 +133,7 @@ gather_data<-function(usernames,
     }
   }
   
-  proj<-sp::proj4string(outsp)
-  outsp<-as.data.frame(outsp)
+  
   outsp<-outsp[!duplicated(outsp[,1:4]),]
   outsp<-outsp[complete.cases(outsp$CollarSerialNumber),]
   
