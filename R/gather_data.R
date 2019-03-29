@@ -36,7 +36,7 @@ gather_data<-function(usernames,
                       histdata,
                       vecpath){
   
-  histdat<-rgdal::readOGR(histdata)
+  histdat<-rgdal::readOGR(histdata,verbose=FALSE)
   
   gps <- Part::CombDat(vecpath= vecpath,
                        ATSUsers = usernames,
