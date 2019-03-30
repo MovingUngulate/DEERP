@@ -15,6 +15,9 @@ create_HR<-function(dat,grid, aidname){
   tab<-as.data.frame(table(dat@data[,aidname]))
   tab<-tab[tab$Freq>50,]
   dat@data<-dat@data[dat@data[,aidname] %in% tab$Var1,]
+  
+  dat@data[,aidname]<-as.factor(dat@data[,aidname])
+  
   system.time({ kern<-adehabitatHR::kernelUD(dat[,aidname],grid=grid) })
   
   system.time({ hr<-adehabitatHR::estUDm2spixdf(kern) })
