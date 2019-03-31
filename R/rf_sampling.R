@@ -18,11 +18,13 @@
 
 rf_sampling<-function(x, dat, nsamps, nt, maxnt, proj, ras){
   
+  
+  #raster::beginCluster(10)
   subd<-dat[dat$Spp==x$Species&dat$Month==x$Month&dat$Year==x$Year,]
   
   
-  coordinates(subd)<-~Easting+Northing
-  proj4string(subd)<-proj
+  sp::coordinates(subd)<-~Easting+Northing
+  sp::proj4string(subd)<-proj
   
   tes<-raster::rasterize(subd,ras,field=1)
   dist=raster::distance(tes)
@@ -51,6 +53,8 @@ rf_sampling<-function(x, dat, nsamps, nt, maxnt, proj, ras){
   samp@data$Spp<-subd@data$Spp[1]
   
   all<-rbind(samp[,c('Used','Month','Year','Spp')],subd[,c('Used','Month','Year','Spp')])
+  
+  #raster::endCluster()
   
   return(list(all,x))
   
