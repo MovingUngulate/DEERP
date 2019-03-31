@@ -26,7 +26,7 @@ rf_mod<-function(x, ras, basepath, ntree, return=FALSE){
   spdf<-as.data.frame(pts)
   
   spdf<-cbind(spdf,ext)
-  spdf<-spdf[complete.cases(spdf[,8:17])]
+  spdf<-spdf[complete.cases(spdf[,8:17]),]
   rfmod<-randomForest::randomForest(x=spdf[,8:17],y=as.factor(spdf$Used),ntree=ntree)
   
   if(return == TRUE){
