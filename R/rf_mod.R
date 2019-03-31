@@ -30,10 +30,10 @@ rf_mod<-function(x, ras, basepath, ntree, return=FALSE){
   rfmod<-randomForest::randomForest(x=spdf[,8:17],y=as.factor(spdf$Used),ntree=ntree)
   
   if(return == TRUE){
-    pred<-raster::predict(ras,rfmod,filename=outn,progress='text')
+    pred<-raster::predict(ras,rfmod,filename=outn,progress='text',type='prob')
     return(pred)
   }else{
-    raster::predict(ras,rfmod,filename=outn,progress='text')
+    raster::predict(ras,rfmod,filename=outn,progress='text',type='prob')
   }
   
 }
