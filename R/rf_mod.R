@@ -13,7 +13,7 @@
 #' \donttest{system.time({ sampout<-lapply(d[1],rf_sampling,dat=df,nsamps=2,nt=5,maxnt=5,proj=dfproj,ras=nras) })}
 
 
-rf_mod<-function(x, ras, basepath, ntree, return=FALSE){
+rf_mod<-function(x, ras, basepath, ntree){
   
   pts <- x[[1]]
   
@@ -27,18 +27,26 @@ rf_mod<-function(x, ras, basepath, ntree, return=FALSE){
   
   spdf<-cbind(spdf,ext)
   spdf<-spdf[complete.cases(spdf[,8:17]),]
-  rfmod<-randomForest::randomForest(x=spdf[,8:17],y=as.factor(spdf$Used),ntree=ntree)
-  
-  if(return == TRUE){
+  train<-data.frame()
+  test<-data.frame()
+  for(i in 0:1){
+    st<-spdf[spdf$Used==i,]
+    st$N<-1:nrow(st)
     
-    pred<-raster::predict(ras,rfmod,progress='text',type='prob')
-    pred<-abs(pred-1)
-    raster::writeRaster(pred,filename=outn)
-    return(pred)
-  }else{
-    pred<-raster::predict(ras,rfmod,progress='text',type='prob')
-    pred<-abs(pred-1)
-    raster::writeRaster(pred,filename=outn)
+    st_train<-st[sample(nrow(st)*.9),]
+    st_test<-st[!(st$N %in% st_train$N),]
+    
+    train<-rbind(train,st_train)
+    test<-rbind(test,st_test)
   }
+  
+  rfmod<-randomForest::randomForest(x=train[,8:17],y=as.factor(train$Used),ntree=ntree)
+  
+  test$Pred<-predict(rfmod,test[,8:17],type='prob')[,2]
+  
+  pred<-raster::predict(ras,rfmod,progress='text',type='prob')
+  pred<-abs(pred-1)
+  raster::writeRaster(pred,filename=outn)
+  return(test)
   
 }
