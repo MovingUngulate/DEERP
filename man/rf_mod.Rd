@@ -4,7 +4,7 @@
 \alias{rf_mod}
 \title{RF RSF-type models}
 \usage{
-rf_mod(x, ras, basepath, ntree, return = FALSE)
+rf_mod(x, ras, basepath, ntree)
 }
 \arguments{
 \item{x}{output of rf_sampling}
