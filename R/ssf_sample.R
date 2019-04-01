@@ -61,7 +61,7 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   ssfdat<- st %>% amt::nest(-id) %>%
     dplyr::mutate(ssf = purrr::map(data, function(d){
       d %>%
-        amt::track_resample(rate = hours(1), tolerance = minutes(15)) %>%
+        amt::track_resample(rate = amt::hours(1), tolerance = amt::minutes(15)) %>%
         amt::filter_min_n_burst(min_n = 3) %>%
         amt::steps_by_burst() %>% amt::random_steps(nran) ## can specify number of random steps desired
     })) %>% dplyr::select(id, ssf) %>% amt::unnest()
