@@ -22,16 +22,19 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   subd$burst=1
   st<-amt::make_track(subd, .x = Easting, .y = Northing, .t = TelemDate, id = AID, burst_ = burst, crs = sp::CRS(proj))
   
-  ssf1 <- st %>% steps_by_burst()
+  ssf1 <- st %>% 
+    amt::steps_by_burst()
+  
   trk.class<-class(st)
   
-  nest.track<-st%>%nest(-id)
+  #nest.track<-st %>% nest(-id)
   
-  st<-st %>% nest(-id) %>%
+  st<-st %>% 
+    nest(-id) %>%
     mutate(dir_abs = map(data, direction_abs,full_circle=TRUE, zero="N"),
            dir_rel = map(data, direction_rel),
            sl = map(data, step_lengths),
-           nsd_=map(data, nsd))%>%unnest()
+           nsd_=map(data, nsd)) %>% unnest()
   
   st<-st%>%
     mutate(
@@ -43,20 +46,24 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   class(st)<-trk.class
   
-  st<-st %>% group_by(id) %>% mutate(dt_ = t_ - lag(t_, default = NA))
+  st<-st %>% 
+    group_by(id) %>% 
+    mutate(dt_ = t_ - lag(t_, default = NA))
   
   
   #### Re sample tracks and append bursts to each id #####
   
-  st %>% nest(-id) %>% mutate(sr = map(.$data, summarize_sampling_rate)) %>%
-    select(id, sr) %>% unnest()
+  st %>% nest(-id) %>% 
+    mutate(sr = map(.$data, amt::summarize_sampling_rate)) %>%
+    select(id, sr) %>% 
+    unnest()
   
   ssfdat<- st %>% nest(-id) %>%
     mutate(ssf = map(data, function(d){
       d %>%
         track_resample(rate = hours(1), tolerance = minutes(15)) %>%
         filter_min_n_burst(min_n = 3) %>%
-        steps_by_burst() %>% random_steps(nran) ## can specify number of random steps desired
+        amt::steps_by_burst() %>% amt::random_steps(nran) ## can specify number of random steps desired
     })) %>% select(id, ssf) %>% unnest()
   
   
