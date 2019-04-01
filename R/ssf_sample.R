@@ -31,10 +31,10 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   st<-st %>% 
     amt::nest(-id) %>%
-    dplyr::mutate(dir_abs = map(data, amt::direction_abs,full_circle=TRUE, zero="N"),
-           dir_rel = map(data, amt::direction_rel),
-           sl = map(data, amt::step_lengths),
-           nsd_=map(data, amt::nsd)) %>% amt::unnest()
+    dplyr::mutate(dir_abs = purrr::map(data, amt::direction_abs,full_circle=TRUE, zero="N"),
+           dir_rel = purrr::map(data, amt::direction_rel),
+           sl = purrr::map(data, amt::step_lengths),
+           nsd_=purrr::map(data, amt::nsd)) %>% amt::unnest()
   
   st<-st%>%
     dplyr::mutate(
@@ -54,12 +54,12 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   #### Re sample tracks and append bursts to each id #####
   
   st %>% amt::nest(-id) %>% 
-    dplyr::mutate(sr = map(.$data, amt::summarize_sampling_rate)) %>%
+    dplyr::mutate(sr = purrr::map(.$data, amt::summarize_sampling_rate)) %>%
     select(id, sr) %>% 
     unnest()
   
   ssfdat<- st %>% amt::nest(-id) %>%
-    dplyr::mutate(ssf = map(data, function(d){
+    dplyr::mutate(ssf = purrr::map(data, function(d){
       d %>%
         amt::track_resample(rate = hours(1), tolerance = minutes(15)) %>%
         amt::filter_min_n_burst(min_n = 3) %>%

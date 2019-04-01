@@ -16,6 +16,7 @@ Imports:
     amt,
     raster,
     lubridate,
+    purrr,
     rgeos,
     data.table,
     rgdal,
