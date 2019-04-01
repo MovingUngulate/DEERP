@@ -17,7 +17,7 @@
 
 
 ssf_sample<-function(x, dat, ras, proj, basepath, nran){
-  
+  tryCatch({
   subd<-dat[dat$Spp==x$Species&dat$Month==x$Month&dat$Year==x$Year,]
   subd$burst=1
   st<-amt::make_track(subd, .x = Easting, .y = Northing, .t = TelemDate, id = AID, burst_ = burst, crs = sp::CRS(proj))
@@ -98,5 +98,15 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   ssf.df@data<-cbind(ssf.df@data,raster::extract(nras,ssf.df,df=T))
   
   return(ssf.df)
+  
+  },
+  error=function(e) {
+    message(paste0(x$Month[1],'_',x$Year[1],'_',x$Species[1]))
+    return(NULL)
+  },
+  warning=function(w) {
+    message(paste0(x$Month[1],'_',x$Year[1],'_',x$Species[1]))
+    return(NULL)
+  })
   
 }
