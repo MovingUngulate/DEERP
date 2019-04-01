@@ -12,6 +12,8 @@ LazyData: TRUE
 Imports:
     sp,
     Part,
+    dplyr,
+    amt,
     raster,
     rgeos,
     data.table,
