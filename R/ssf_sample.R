@@ -30,18 +30,18 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   #nest.track<-st %>% nest(-id)
   
   st<-st %>% 
-    nest(-id) %>%
-    mutate(dir_abs = map(data, direction_abs,full_circle=TRUE, zero="N"),
-           dir_rel = map(data, direction_rel),
-           sl = map(data, step_lengths),
-           nsd_=map(data, nsd)) %>% unnest()
+    amt::nest(-id) %>%
+    mutate(dir_abs = map(data, amt::direction_abs,full_circle=TRUE, zero="N"),
+           dir_rel = map(data, amt::direction_rel),
+           sl = map(data, amt::step_lengths),
+           nsd_=map(data, amt::nsd)) %>% amt::unnest()
   
   st<-st%>%
     mutate(
-      week=week(t_),
-      month = month(t_, label=TRUE),
-      year=year(t_),
-      hour = hour(t_)
+      week=lubridate::week(t_),
+      month = lubridate::month(t_, label=TRUE),
+      year=lubridate::year(t_),
+      hour = lubridate::hour(t_)
     )
   
   class(st)<-trk.class
@@ -53,26 +53,26 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   #### Re sample tracks and append bursts to each id #####
   
-  st %>% nest(-id) %>% 
+  st %>% amt::nest(-id) %>% 
     mutate(sr = map(.$data, amt::summarize_sampling_rate)) %>%
     select(id, sr) %>% 
     unnest()
   
-  ssfdat<- st %>% nest(-id) %>%
+  ssfdat<- st %>% amt::nest(-id) %>%
     mutate(ssf = map(data, function(d){
       d %>%
-        track_resample(rate = hours(1), tolerance = minutes(15)) %>%
-        filter_min_n_burst(min_n = 3) %>%
+        amt::track_resample(rate = hours(1), tolerance = minutes(15)) %>%
+        amt::filter_min_n_burst(min_n = 3) %>%
         amt::steps_by_burst() %>% amt::random_steps(nran) ## can specify number of random steps desired
-    })) %>% select(id, ssf) %>% unnest()
+    })) %>% select(id, ssf) %>% amt::unnest()
   
   
   ssfdat$utm.easting<-ssfdat$x2_
   ssfdat$utm.northing<-ssfdat$y2_
   
-  ssfdat2 <- SpatialPointsDataFrame(ssfdat[,c("x2_","y2_")], ssfdat,
-                                    proj4string=CRS(proj))
-  ssf.df <- data.frame(spTransform(ssfdat2, proj))
+  ssfdat2 <- sp::SpatialPointsDataFrame(ssfdat[,c("x2_","y2_")], ssfdat,
+                                    proj4string=sp::CRS(proj))
+  ssf.df <- data.frame(sp::spTransform(ssfdat2, proj))
   names(ssf.df)[c(1,14,15)] <-c("AID", "Easting", "Northing")
   ssf.df$timestamp<-ssf.df$t1_
   #ssf.df %>% select(Easting, Northing, x1_, x2_, y1_, y2_) %>% head

@@ -15,6 +15,7 @@ Imports:
     dplyr,
     amt,
     raster,
+    lubridate,
     rgeos,
     data.table,
     rgdal,
