@@ -17,16 +17,16 @@
 
 
 ssf_sample<-function(x, dat, ras, proj, basepath, nran){
-  tryCatch({
+  #tryCatch({
   
-    options(warn=-1)
+    #options(warn=-1)
     subd<-dat[dat$Spp==x$Species&dat$Month==x$Month&dat$Year==x$Year,]
   subd$burst=1
   st<-amt::make_track(subd, .x = Easting, .y = Northing, .t = TelemDate, id = AID, burst_ = burst, crs = sp::CRS(proj))
   
   ssf1 <- st %>% 
     amt::steps_by_burst()
-  options(warn=0)
+  #options(warn=0)
   trk.class<-class(st)
   
   #nest.track<-st %>% nest(-id)
@@ -101,14 +101,14 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   return(ssf.df)
   
-  },
-  error=function(e) {
-    message(paste0(x$Month[1],'_',x$Year[1],'_',x$Species[1]))
-    return(NULL)
-  },
-  warning=function(w) {
-    message(paste0(x$Month[1],'_',x$Year[1],'_',x$Species[1]))
-    return(NULL)
-  })
+  # },
+  # error=function(e) {
+  #   message(paste0(x$Month[1],'_',x$Year[1],'_',x$Species[1]))
+  #   return(NULL)
+  # },
+  # warning=function(w) {
+  #   message(paste0(x$Month[1],'_',x$Year[1],'_',x$Species[1]))
+  #   return(NULL)
+  # })
   
 }
