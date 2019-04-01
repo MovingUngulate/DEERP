@@ -10,6 +10,7 @@
 #' @return Model ready DF
 #' @keywords sampling, ssf
 #' @export
+#' @importFrom dplyr "%>%"
 #' @examples
 #' \donttest{system.time({ od<-lapply(d[1],ssf_sample, dat=df, ras=rasstack, proj=proj4string(rasstack), basepath='/home/puma/Desktop/DEERP/RF/', nran=5) })}
 
