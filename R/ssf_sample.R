@@ -22,6 +22,11 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
     #options(warn=-1)
     subd<-dat[dat$Spp==x$Species&dat$Month==x$Month&dat$Year==x$Year,]
   subd$burst=1
+  
+  tab<-as.data.frame(table(subd$AID))
+  tab<-tab[tab$Freq>300,]
+  subd<-subd[subd$AID %in% tab$Var1,]
+  
   st<-amt::make_track(subd, .x = Easting, .y = Northing, .t = TelemDate, id = AID, burst_ = burst, crs = sp::CRS(proj))
   
   ssf1 <- st %>% 
@@ -55,10 +60,10 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   #### Re sample tracks and append bursts to each id #####
   
-  st %>% amt::nest(-id) %>% 
-    dplyr::mutate(sr = purrr::map(.$data, amt::summarize_sampling_rate)) %>%
-    dplyr::select(id, sr) %>% 
-    amt::unnest()
+  # st %>% amt::nest(-id) %>% 
+  #   dplyr::mutate(sr = purrr::map(.$data, amt::summarize_sampling_rate)) %>%
+  #   dplyr::select(id, sr) %>% 
+  #   amt::unnest()
   
   ssfdat<- st %>% amt::nest(-id) %>%
     dplyr::mutate(ssf = purrr::map(data, function(d){
