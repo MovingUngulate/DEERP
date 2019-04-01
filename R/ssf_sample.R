@@ -19,7 +19,7 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   subd<-dat[dat$Spp==x$Species&dat$Month==x$Month&dat$Year==x$Year,]
   subd$burst=1
-  st<-amt::make_track(subd, .x = Easting, .y = Northing, .t = TelemDate, id = AID, burst_ = burst, crs = CRS(proj))
+  st<-amt::make_track(subd, .x = Easting, .y = Northing, .t = TelemDate, id = AID, burst_ = burst, crs = sp::CRS(proj))
   
   ssf1 <- st %>% steps_by_burst()
   trk.class<-class(st)
