@@ -47,7 +47,7 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   class(st)<-trk.class
   
   st<-st %>% 
-    group_by(id) %>% 
+    dplyr::group_by(id) %>% 
     dplyr::mutate(dt_ = t_ - lag(t_, default = NA))
   
   
@@ -55,8 +55,8 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   st %>% amt::nest(-id) %>% 
     dplyr::mutate(sr = purrr::map(.$data, amt::summarize_sampling_rate)) %>%
-    select(id, sr) %>% 
-    unnest()
+    dplyr::select(id, sr) %>% 
+    amt::unnest()
   
   ssfdat<- st %>% amt::nest(-id) %>%
     dplyr::mutate(ssf = purrr::map(data, function(d){
@@ -64,7 +64,7 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
         amt::track_resample(rate = hours(1), tolerance = minutes(15)) %>%
         amt::filter_min_n_burst(min_n = 3) %>%
         amt::steps_by_burst() %>% amt::random_steps(nran) ## can specify number of random steps desired
-    })) %>% select(id, ssf) %>% amt::unnest()
+    })) %>% dplyr::select(id, ssf) %>% amt::unnest()
   
   
   ssfdat$utm.easting<-ssfdat$x2_
@@ -90,7 +90,7 @@ ssf_sample<-function(x, dat, ras, proj, basepath, nran){
   
   raspath<-paste0(basepath,rasnam)
   
-  nras<-raster::stack(ras,raster(raspath))
+  nras<-raster::stack(ras,raster::raster(raspath))
   
   sp::coordinates(ssf.df)<-~Easting+Northing
   sp::proj4string(ssf.df)<-proj
