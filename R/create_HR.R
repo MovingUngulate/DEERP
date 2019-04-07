@@ -22,7 +22,7 @@ create_HR<-function(dat,grid, aidname,path, hrsize=95){
   
   ver <- adehabitatHR::getverticeshr(kern, percent=hrsize)
   
-  rgdal::writeOGR(ver,path,paste0(dat$Spp[1],'_HR_',dat$Year[1],'_',dat$Month[1]),driver='ESRI Shapefile')
+  rgdal::writeOGR(ver,path,paste0(dat$Spp[1],'_',as.character(hrsize),'HR_',dat$Year[1],'_',dat$Month[1]),driver='ESRI Shapefile')
   
   system.time({ hr<-adehabitatHR::estUDm2spixdf(kern) })
   
