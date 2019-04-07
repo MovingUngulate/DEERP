@@ -10,7 +10,7 @@
 #' @examples
 #' \donttest{hr<-HRFun(dat = dat, grid = grid)}
 
-create_HR<-function(dat,grid, aidname){
+create_HR<-function(dat,grid, aidname,path, hrsize=95){
   dat@data[,aidname]<-as.character(dat@data[,aidname])
   tab<-as.data.frame(table(dat@data[,aidname]))
   tab<-tab[tab$Freq>50,]
@@ -19,6 +19,10 @@ create_HR<-function(dat,grid, aidname){
   dat@data[,aidname]<-as.factor(dat@data[,aidname])
   
   system.time({ kern<-adehabitatHR::kernelUD(dat[,aidname],grid=grid) })
+  
+  ver <- adehabitatHR::getverticeshr(kern, percent=hrsize)
+  
+  rgdal::writeOGR(ver,path,paste0(dat$Spp[1],'_HR_',dat$Year[1],'_',dat$Month[1]),driver='ESRI Shapefile')
   
   system.time({ hr<-adehabitatHR::estUDm2spixdf(kern) })
   

@@ -4,7 +4,7 @@
 \alias{create_HR}
 \title{Create homerange for an individual}
 \usage{
-create_HR(dat, grid, aidname)
+create_HR(dat, grid, aidname, path, hrsize = 95)
 }
 \arguments{
 \item{dat}{data.frame with relocation data}
